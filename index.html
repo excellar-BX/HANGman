@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hangman Game</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div id="hangman_screen"></div>
+      <div id="guesses"></div>
+      <div id="message"></div>
+      <button id="resetBtn">Play Again</button>
+      <div id="letters_container"></div>
+    </div>
+   <script>
+    const hangman_screen = document.getElementById("hangman_screen");
+const letters_container = document.getElementById("letters_container");
+const resetBtn = document.getElementById("resetBtn");
+const message = document.getElementById("message");
+const guesses_container = document.getElementById("guesses");
+const letter_button = document.getElementsByClassName("letter_button");
+const letters = [
+  "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+  "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+];
+
+// Expanded fallback words list
+const words = [
+  "JAVASCRIPT", "NEXTJS", "REACTJS", "HANGMAN", "COMPUTER", "PROGRAMMING",
+  "DEVELOPER", "WEBSITE", "FUNCTION", "VARIABLE", "ALGORITHM", "DATABASE",
+  "FRAMEWORK", "LIBRARY", "DEBUGGING", "FRONTEND", "BACKEND", "BOOTSTRAP",
+  "JQUERY", "NODEJS", "EXPRESS", "MONGODB", "PYTHON", "GITHUB"
+];
+
+let chosenWord = "";
+
+// Function to fetch words from API
+async function fetchRandomWord() {
+  try {
+    // Using a different free API - WordsAPI alternative
+    const response = await fetch("https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=10&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5");
+    
+    if (!response.ok) {
+      throw new Error('API request failed');
+    }
+    
+    const data = await response.json();
+    return data.word.toUpperCase();
+  } catch (error) {
+    console.log("Primary API failed, trying backup...");
+    
+    // Backup API option
+    try {
+      const backupResponse = await fetch("https://random-words-api.vercel.app/word");
+      const backupData = await backupResponse.json();
+      return backupData[0].word.toUpperCase();
+    } catch (backupError) {
+      console.log("All APIs failed, using fallback words");
+      return words[Math.floor(Math.random() * words.length)];
+    }
+  }
+}
+
+async function startGame() {
+  // Show loading message
+  message.textContent = "Loading new word...";
+  
+  // Fetch a new word
+  chosenWord = await fetchRandomWord();
+  
+  // Initialize game variables
+  let guessedWord = Array(chosenWord.length).fill("_");
+  let guesses = 6;
+  
+  // Reset UI
+  letters_container.innerHTML = "";
+  message.classList.remove("message");
+  message.textContent = "";
+  hangman_screen.textContent = guessedWord.join(" ");
+  resetBtn.style.display = "none";
+  guesses_container.textContent = "";
+  guesses_container.classList.remove("guesses");
+  
+  // Create letter buttons
+  letters.forEach((letter) => {
+    const button = document.createElement("button");
+    button.textContent = letter;
+    button.classList.add("letter_button");
+    letters_container.appendChild(button);
+    button.addEventListener("click", () => handleGuess(letter, button));
+  });
+
+  function handleGuess(letter, button) {
+    button.disabled = true;
+    guesses_container.textContent = null;
+    guesses_container.classList.remove("guesses");
+    
+    if (chosenWord.includes(letter)) {
+      // Correct guess
+      for (let i = 0; i < chosenWord.length; i++) {
+        if (chosenWord[i] === letter) {
+          guessedWord[i] = letter;
+        }
+      }
+      hangman_screen.textContent = guessedWord.join(" ");
+      
+      // Check if word is complete
+      if (!guessedWord.includes("_")) {
+        message.classList.add("message");
+        message.textContent = "YOU WIN!";
+        endGame();
+      }
+    } else {
+      // Wrong guess
+      guesses--;
+      if (guesses === 0) {
+        message.classList.add("message");
+        message.textContent = `GAME OVER! THE WORD WAS ${chosenWord}`;
+        endGame();
+      } else {
+        guesses_container.classList.add("guesses");
+        guesses_container.textContent = `WRONG! You have ${guesses} guess${guesses === 1 ? '' : 'es'} remaining`;
+      }
+    }
+  }
+}
+
+function endGame() {
+  document.querySelectorAll(".letter_button").forEach((btn) => (btn.disabled = true));
+  resetBtn.style.display = "block";
+}
+
+resetBtn.addEventListener("click", startGame);
+
+// Start the first game
+startGame();
+   </script>
+  </body>
+</html>

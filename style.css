@@ -1,0 +1,112 @@
+*{
+    background-image: linear-gradient(36deg, #01b0c7, #0df4d5);
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.container{
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    height: 95vh;
+}
+#hangman_screen{
+    width: 100%;
+    height: 80px;
+    margin: 10px;
+    background: #ffffff21;
+    backdrop-filter: blur(-100px);
+    border: 1px solid rgba(255, 255, 255, 0.326);
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.guesses{
+    background: #ffffff21;
+    backdrop-filter: blur(-100px);
+    border: 1px solid rgba(255, 255, 255, 0.326);
+    min-width: 100px;
+    border-radius: 20px;
+    padding: 10px;
+    margin: 10px;
+    color: rgb(188, 35, 35);
+}
+.message{
+    background: #ffffff21;
+    backdrop-filter: blur(-100px);
+    border: 1px solid rgba(255, 255, 255, 0.326);
+    min-width: 100px;
+    border-radius: 5px;
+    padding: 10px 20px ;
+    margin: 10px;
+    text-align: center;
+    color: white;
+}
+#letters_container{
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 10px;
+    row-gap: 10px;
+    background: #ffffff21;
+    backdrop-filter: blur(-100px);
+    border: 1px solid rgba(255, 255, 255, 0.326);
+    border-radius: 20px;
+    padding: 20px;
+}
+.letter_button:disabled{
+    background: rgba(0, 0, 0, 0.271);
+    cursor: not-allowed;
+}
+.letter_button{
+    background: chocolate;
+    margin-top: 10px; 
+    width: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border: none;
+    outline: none;
+    height: 70px;
+    cursor: pointer;
+    border-radius: 25px;
+}
+.letter_button:hover{
+    box-shadow: #000 3px 3px 10px;
+}
+#resetBtn{
+    background: #ffffff21;
+    backdrop-filter: blur(-100px);
+    border: 1px solid rgba(255, 255, 255, 0.326);
+    min-width: 100px;
+    border-radius: 25px;
+    padding: 15px 40px ;
+    margin: 10px;
+    cursor: pointer;
+    text-align: center;
+    color: white;
+    font-size: 19px;
+}
+#resetBtn:hover{
+    background: #00fffb86;
+}
+
+@media (max-width: 400px) {
+    .letter_button{
+        width: 50px;
+        height: 50px;
+    }
+    #resetBtn{
+    padding: 10px 20px ;
+    font-size: 15px;
+    }
+    .message{
+    font-size: 15px;
+    }
+    .guesses{
+    font-size: 15px;
+    }
+}

@@ -47,7 +47,7 @@ async function fetchRandomWord() {
     }
     
     const data = await response.json();
-    return data.word.toUpperCase();
+    return data.word.toUpperCase().trim();
   } catch (error) {
     console.log("Primary API failed, trying backup...");
     
@@ -55,7 +55,7 @@ async function fetchRandomWord() {
     try {
       const backupResponse = await fetch("https://random-words-api.vercel.app/word");
       const backupData = await backupResponse.json();
-      return backupData[0].word.toUpperCase();
+      return backupData[0].word.toUpperCase().trim();
     } catch (backupError) {
       console.log("All APIs failed, using fallback words");
       return words[Math.floor(Math.random() * words.length)];
